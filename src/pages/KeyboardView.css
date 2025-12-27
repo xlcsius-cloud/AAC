@@ -1,0 +1,134 @@
+.keyboard-view {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.quick-words {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 15px;
+}
+
+.quick-word-button {
+  padding: 0.75rem 1.5rem;
+  background: #667eea;
+  color: white;
+  border-radius: 25px;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.quick-word-button:hover {
+  background: #5568d3;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.keyboard-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1.5rem;
+  background: #f8f9fa;
+  border-radius: 15px;
+}
+
+.keyboard-row {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.key-button {
+  min-width: 60px;
+  height: 60px;
+  background: white;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #333;
+  transition: all 0.2s ease;
+}
+
+.key-button:hover {
+  background: #667eea;
+  color: white;
+  border-color: #667eea;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.key-button:active {
+  transform: translateY(0);
+}
+
+.keyboard-controls {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.control-button {
+  padding: 1rem 2rem;
+  border-radius: 15px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.space-button {
+  flex: 2;
+  background: #4ECDC4;
+  color: white;
+}
+
+.space-button:hover {
+  background: #45b8b0;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.backspace-button {
+  background: #ff6b6b;
+  color: white;
+}
+
+.backspace-button:hover {
+  background: #ee5a5a;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.send-button {
+  background: #4ECDC4;
+  color: white;
+}
+
+.send-button:hover {
+  background: #45b8b0;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+@media (max-width: 768px) {
+  .key-button {
+    min-width: 45px;
+    height: 45px;
+    font-size: 1.2rem;
+  }
+
+  .keyboard-row {
+    gap: 0.3rem;
+  }
+
+  .control-button {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+  }
+}

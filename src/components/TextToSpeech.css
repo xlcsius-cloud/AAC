@@ -1,0 +1,30 @@
+.speak-button {
+  padding: 0.75rem 2rem;
+  background: #4ECDC4;
+  color: white;
+  border-radius: 25px;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.speak-button:hover:not(:disabled) {
+  background: #45b8b0;
+}
+
+.speak-button:disabled {
+  opacity: 0.6;
+}
+
+.speak-button.speaking {
+  background: #ff6b6b;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
