@@ -7,6 +7,8 @@ export default function IconsView() {
   const icons = useStore((state) => state.icons);
   const selectedCategory = useStore((state) => state.selectedCategory);
   const setSelectedCategory = useStore((state) => state.setSelectedCategory);
+  const autoSpeakOnIconClick = useStore((state) => state.autoSpeakOnIconClick);
+  const setAutoSpeakOnIconClick = useStore((state) => state.setAutoSpeakOnIconClick);
 
   const filteredIcons = selectedCategory
     ? icons.filter(icon => icon.category === selectedCategory)
@@ -19,28 +21,43 @@ export default function IconsView() {
 
   return (
     <div className="icons-view">
-      <div className="category-filter">
-        <button
-          className={`category-button ${selectedCategory === null ? 'active' : ''}`}
-          onClick={() => setSelectedCategory(null)}
-        >
-          All
-        </button>
-        {categories.map((category) => (
+      <div className="icons-controls">
+        <div className="category-filter">
           <button
-            key={category.id}
-            className={`category-button ${selectedCategory === category.id ? 'active' : ''}`}
-            onClick={() => setSelectedCategory(category.id)}
-            style={{
-              backgroundColor: selectedCategory === category.id ? category.color : '#f0f0f0',
-              color: selectedCategory === category.id ? 'white' : '#666',
-              borderColor: category.color,
-            }}
+            className={`category-button ${selectedCategory === null ? 'active' : ''}`}
+            onClick={() => setSelectedCategory(null)}
           >
-            <span className="category-emoji">{category.emoji}</span>
-            {category.name}
+            All
           </button>
-        ))}
+          {categories.map((category) => (
+            <button
+              key={category.id}
+              className={`category-button ${selectedCategory === category.id ? 'active' : ''}`}
+              onClick={() => setSelectedCategory(category.id)}
+              style={{
+                backgroundColor: selectedCategory === category.id ? category.color : '#f0f0f0',
+                color: selectedCategory === category.id ? 'white' : '#666',
+                borderColor: category.color,
+              }}
+            >
+              <span className="category-emoji">{category.emoji}</span>
+              {category.name}
+            </button>
+          ))}
+        </div>
+        <div className="auto-speak-toggle">
+          <label className="toggle-label">
+            <input
+              type="checkbox"
+              checked={autoSpeakOnIconClick}
+              onChange={(e) => setAutoSpeakOnIconClick(e.target.checked)}
+              className="toggle-checkbox"
+            />
+            <span className="toggle-text">
+              {autoSpeakOnIconClick ? '🔊 Auto-Speak ON' : '🔇 Auto-Speak OFF'}
+            </span>
+          </label>
+        </div>
       </div>
 
       <div className="icons-grid">

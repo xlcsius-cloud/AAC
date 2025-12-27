@@ -4,6 +4,12 @@
   gap: 2rem;
 }
 
+.icons-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
 .category-filter {
   display: flex;
   flex-wrap: wrap;
@@ -11,6 +17,35 @@
   padding: 1rem;
   background: #f8f9fa;
   border-radius: 15px;
+}
+
+.auto-speak-toggle {
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 15px;
+  display: flex;
+  justify-content: center;
+}
+
+.toggle-label {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.toggle-checkbox {
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  accent-color: #667eea;
+}
+
+.toggle-text {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
 }
 
 .category-button {

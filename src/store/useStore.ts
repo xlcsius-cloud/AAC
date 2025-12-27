@@ -7,6 +7,7 @@ interface StoreState {
   messages: Message[];
   currentText: string;
   selectedCategory: string | null;
+  autoSpeakOnIconClick: boolean;
   
   // Actions
   addIcon: (icon: Icon) => void;
@@ -21,6 +22,7 @@ interface StoreState {
   appendToCurrentText: (text: string) => void;
   clearCurrentText: () => void;
   setSelectedCategory: (categoryId: string | null) => void;
+  setAutoSpeakOnIconClick: (enabled: boolean) => void;
   
   // Initialize with default data
   initialize: () => void;
@@ -79,14 +81,19 @@ export const useStore = create<StoreState>((set, get) => ({
   messages: [],
   currentText: '',
   selectedCategory: null,
+  autoSpeakOnIconClick: false,
 
   initialize: () => {
     const storedIcons = localStorage.getItem('aac-icons');
     const storedCategories = localStorage.getItem('aac-categories');
+    const storedAutoSpeak = localStorage.getItem('aac-auto-speak');
+    
+    const autoSpeak = storedAutoSpeak !== null ? JSON.parse(storedAutoSpeak) : false;
     
     set({
       icons: storedIcons ? JSON.parse(storedIcons) : defaultIcons,
       categories: storedCategories ? JSON.parse(storedCategories) : defaultCategories,
+      autoSpeakOnIconClick: autoSpeak,
     });
     
     // Save defaults if first time
@@ -95,6 +102,9 @@ export const useStore = create<StoreState>((set, get) => ({
     }
     if (!storedCategories) {
       localStorage.setItem('aac-categories', JSON.stringify(defaultCategories));
+    }
+    if (storedAutoSpeak === null) {
+      localStorage.setItem('aac-auto-speak', JSON.stringify(false));
     }
   },
 
@@ -162,4 +172,9 @@ export const useStore = create<StoreState>((set, get) => ({
   clearCurrentText: () => set({ currentText: '' }),
 
   setSelectedCategory: (categoryId) => set({ selectedCategory: categoryId }),
+
+  setAutoSpeakOnIconClick: (enabled) => {
+    set({ autoSpeakOnIconClick: enabled });
+    localStorage.setItem('aac-auto-speak', JSON.stringify(enabled));
+  },
 }));

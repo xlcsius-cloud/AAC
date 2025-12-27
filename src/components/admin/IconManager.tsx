@@ -12,6 +12,7 @@ export default function IconManager() {
 
   const [isAdding, setIsAdding] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [imageMode, setImageMode] = useState<'emoji' | 'url' | 'upload'>('emoji');
   const [formData, setFormData] = useState<Partial<Icon>>({
     label: '',
     emoji: '',
@@ -22,25 +23,65 @@ export default function IconManager() {
     setFormData({
       label: '',
       emoji: '',
+      imageUrl: '',
       category: categories[0]?.id || '',
     });
+    setImageMode('emoji');
     setIsAdding(false);
     setEditingId(null);
+  };
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (!file.type.startsWith('image/')) {
+        alert('Please select an image file');
+        return;
+      }
+      
+      if (file.size > 5 * 1024 * 1024) {
+        alert('Image file size must be less than 5MB');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const dataUrl = reader.result as string;
+        setFormData({ ...formData, imageUrl: dataUrl, emoji: '' });
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.label || !formData.category) return;
 
+    const iconData: Partial<Icon> = {
+      label: formData.label!,
+      category: formData.category!,
+      color: categories.find(c => c.id === formData.category)?.color,
+    };
+
+    if (imageMode === 'upload' || imageMode === 'url') {
+      if (formData.imageUrl) {
+        iconData.imageUrl = formData.imageUrl;
+        iconData.emoji = formData.emoji || undefined;
+      } else {
+        alert('Please provide an image URL or upload an image');
+        return;
+      }
+    } else {
+      iconData.emoji = formData.emoji || '📌';
+      iconData.imageUrl = undefined;
+    }
+
     if (editingId) {
-      updateIcon(editingId, formData);
+      updateIcon(editingId, iconData);
     } else {
       const newIcon: Icon = {
         id: Date.now().toString(),
-        label: formData.label!,
-        emoji: formData.emoji || '📌',
-        category: formData.category!,
-        color: categories.find(c => c.id === formData.category)?.color,
+        ...iconData as Icon,
       };
       addIcon(newIcon);
     }
@@ -51,8 +92,20 @@ export default function IconManager() {
     setFormData({
       label: icon.label,
       emoji: icon.emoji,
+      imageUrl: icon.imageUrl,
       category: icon.category,
     });
+    
+    if (icon.imageUrl) {
+      if (icon.imageUrl.startsWith('data:')) {
+        setImageMode('upload');
+      } else {
+        setImageMode('url');
+      }
+    } else {
+      setImageMode('emoji');
+    }
+    
     setEditingId(icon.id);
     setIsAdding(true);
   };
@@ -92,14 +145,86 @@ export default function IconManager() {
             />
           </div>
           <div className="form-group">
-            <label>Emoji</label>
-            <input
-              type="text"
-              value={formData.emoji}
-              onChange={(e) => setFormData({ ...formData, emoji: e.target.value })}
-              placeholder="e.g., 👩, 🍎, 😊"
-            />
+            <label>Icon Type</label>
+            <div className="icon-type-selector">
+              <button
+                type="button"
+                className={`icon-type-button ${imageMode === 'emoji' ? 'active' : ''}`}
+                onClick={() => {
+                  setImageMode('emoji');
+                  setFormData({ ...formData, imageUrl: '' });
+                }}
+              >
+                😀 Emoji
+              </button>
+              <button
+                type="button"
+                className={`icon-type-button ${imageMode === 'url' ? 'active' : ''}`}
+                onClick={() => {
+                  setImageMode('url');
+                  setFormData({ ...formData, emoji: '' });
+                }}
+              >
+                🔗 Image URL
+              </button>
+              <button
+                type="button"
+                className={`icon-type-button ${imageMode === 'upload' ? 'active' : ''}`}
+                onClick={() => {
+                  setImageMode('upload');
+                  setFormData({ ...formData, emoji: '' });
+                }}
+              >
+                📷 Upload Image
+              </button>
+            </div>
           </div>
+
+          {imageMode === 'emoji' && (
+            <div className="form-group">
+              <label>Emoji</label>
+              <input
+                type="text"
+                value={formData.emoji || ''}
+                onChange={(e) => setFormData({ ...formData, emoji: e.target.value, imageUrl: '' })}
+                placeholder="e.g., 👩, 🍎, 😊"
+              />
+            </div>
+          )}
+
+          {imageMode === 'url' && (
+            <div className="form-group">
+              <label>Image URL</label>
+              <input
+                type="url"
+                value={formData.imageUrl || ''}
+                onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value, emoji: '' })}
+                placeholder="https://example.com/image.png"
+              />
+              {formData.imageUrl && (
+                <div className="image-preview">
+                  <img src={formData.imageUrl} alt="Preview" />
+                </div>
+              )}
+            </div>
+          )}
+
+          {imageMode === 'upload' && (
+            <div className="form-group">
+              <label>Upload Image</label>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleFileUpload}
+                className="file-input"
+              />
+              {formData.imageUrl && formData.imageUrl.startsWith('data:') && (
+                <div className="image-preview">
+                  <img src={formData.imageUrl} alt="Preview" />
+                </div>
+              )}
+            </div>
+          )}
           <div className="form-group">
             <label>Category *</label>
             <select
@@ -138,7 +263,11 @@ export default function IconManager() {
               >
                 <div className="icon-card-header">
                   <span className="icon-preview" style={{ backgroundColor: getCategoryColor(icon.category) }}>
-                    {icon.emoji || '📌'}
+                    {icon.imageUrl ? (
+                      <img src={icon.imageUrl} alt={icon.label} className="icon-preview-image" />
+                    ) : (
+                      icon.emoji || '📌'
+                    )}
                   </span>
                   <div className="icon-card-actions">
                     <button
