@@ -26,14 +26,16 @@ export default function IconsView() {
           <button
             className={`category-button ${selectedCategory === null ? 'active' : ''}`}
             onClick={() => setSelectedCategory(null)}
+            title="All Categories"
           >
-            All
+            ⭐
           </button>
           {categories.map((category) => (
             <button
               key={category.id}
               className={`category-button ${selectedCategory === category.id ? 'active' : ''}`}
               onClick={() => setSelectedCategory(category.id)}
+              title={category.name}
               style={{
                 backgroundColor: selectedCategory === category.id ? category.color : '#f0f0f0',
                 color: selectedCategory === category.id ? 'white' : '#666',
@@ -41,7 +43,6 @@ export default function IconsView() {
               }}
             >
               <span className="category-emoji">{category.emoji}</span>
-              {category.name}
             </button>
           ))}
         </div>
